@@ -171,23 +171,32 @@ def cadastro():
     """
     return render_template('cadastro.html')
 
-@app.route('/cadastro/usuario', methods=['GET', 'POST'])
+@app.route('/cadastro/usuario', methods=['GET'])
 @login_required
 @master_required
 def cadastro_usuario():
     """
-    Rota para cadastro de novos usuários.
+    Rota legada de cadastro de usuário. Redireciona para a tela de pesquisa/gerenciamento.
+    """
+    return redirect(url_for('usuarios_pesquisar', search=1))
+
+@app.route('/cadastro/usuario/inserir', methods=['GET', 'POST'])
+@login_required
+@master_required
+def usuario_inserir():
+    """
+    Rota para inserir um novo usuário com UI dedicada.
     """
     form = CadastroUsuarioForm()
     if form.validate_on_submit():
         if Usuario.query.filter_by(username=form.username.data).first():
             flash('Nome de usuário já existe.', 'danger')
-            return render_template('cadastro.html', form=form, tipo='usuario')
-        
+            return render_template('usuario_inserir.html', form=form)
+
         if Usuario.query.filter_by(email=form.email.data).first():
             flash('Email já cadastrado.', 'danger')
-            return render_template('cadastro.html', form=form, tipo='usuario')
-        
+            return render_template('usuario_inserir.html', form=form)
+
         usuario = Usuario(
             username=form.username.data,
             email=form.email.data,
@@ -202,14 +211,14 @@ def cadastro_usuario():
             pode_ver_relatorios=form.pode_ver_relatorios.data
         )
         usuario.set_password(form.password.data)
-        
+
         db.session.add(usuario)
         db.session.commit()
-        
+
         flash('Usuário cadastrado com sucesso!', 'success')
-        return redirect(url_for('cadastro'))
-    
-    return render_template('cadastro.html', form=form, tipo='usuario')
+        return redirect(url_for('usuarios_pesquisar', search=1))
+
+    return render_template('usuario_inserir.html', form=form)
 
 # Pesquisa/Listagem de usuários no padrão de serviços
 @app.route('/cadastro/usuarios/pesquisar', methods=['GET'])
@@ -233,6 +242,120 @@ def usuarios_pesquisar():
 
     usuarios = base_query.paginate(page=page, per_page=per_page, error_out=False) if show_results else None
     return render_template('usuarios_pesquisa.html', usuarios=usuarios, query=query, per_page=per_page, show_results=show_results)
+
+@app.route('/cadastro/clientes/pesquisar', methods=['GET'])
+@login_required
+@permission_required('pode_cadastrar_cliente')
+def clientes_pesquisar():
+    """
+    Pesquisa/lista clientes no padrão de serviços.
+    """
+    query = request.args.get('query', '').strip()
+    page = request.args.get('page', 1, type=int)
+    per_page = int(request.args.get('per_page', 10)) if str(request.args.get('per_page', '10')).isdigit() else 10
+    show_results = request.args.get('search') == '1'
+
+    base_query = Usuario.query.filter(
+        and_(
+            Usuario.tipo_usuario == 'restrito',
+            Usuario.perfil_funcionario == None
+        )
+    ).order_by(Usuario.nome)
+
+    if query:
+        base_query = base_query.filter(
+            or_(
+                Usuario.nome.ilike(f'%{query}%'),
+                Usuario.username.ilike(f'%{query}%'),
+                Usuario.email.ilike(f'%{query}%')
+            )
+        )
+
+    clientes = base_query.paginate(page=page, per_page=per_page, error_out=False) if show_results else None
+    return render_template('clientes_pesquisa.html', clientes=clientes, query=query, per_page=per_page, show_results=show_results)
+
+@app.route('/cadastro/clientes/inserir', methods=['GET', 'POST'])
+@login_required
+@permission_required('pode_cadastrar_cliente')
+def clientes_inserir():
+    form = CadastroClienteForm()
+    if form.validate_on_submit():
+        if Usuario.query.filter_by(username=form.username.data).first():
+            flash('Nome de usuário já existe.', 'danger')
+            return render_template('cliente_inserir.html', form=form)
+        if Usuario.query.filter_by(email=form.email.data).first():
+            flash('Email já cadastrado.', 'danger')
+            return render_template('cliente_inserir.html', form=form)
+        usuario = Usuario(
+            username=form.username.data,
+            email=form.email.data,
+            nome=form.nome.data,
+            telefone=form.telefone.data,
+            tipo_usuario='restrito'
+        )
+        usuario.set_password(form.password.data)
+        db.session.add(usuario)
+        db.session.commit()
+        flash('Cliente cadastrado com sucesso!', 'success')
+        return redirect(url_for('clientes_pesquisar', search=1))
+    return render_template('cliente_inserir.html', form=form)
+
+@app.route('/cadastro/clientes/editar/<int:cliente_id>', methods=['GET', 'POST'])
+@login_required
+@permission_required('pode_cadastrar_cliente')
+def clientes_editar(cliente_id):
+    cliente = Usuario.query.get_or_404(cliente_id)
+    if not (cliente.tipo_usuario == 'restrito' and cliente.perfil_funcionario is None):
+        flash('Registro não é um cliente válido.', 'danger')
+        return redirect(url_for('clientes_pesquisar', search=1))
+    form = UsuarioEditForm(obj=cliente)
+    if form.validate_on_submit():
+        cliente.email = form.email.data
+        cliente.nome = form.nome.data
+        cliente.telefone = form.telefone.data
+        cliente.ativo = form.ativo.data
+        db.session.commit()
+        flash('Cliente atualizado com sucesso!', 'success')
+        return redirect(url_for('clientes_pesquisar', search=1))
+    return render_template('cliente_form.html', form=form, cliente=cliente)
+
+@app.route('/cadastro/clientes/excluir/<int:cliente_id>', methods=['POST'])
+@login_required
+@permission_required('pode_cadastrar_cliente')
+def clientes_excluir(cliente_id):
+    cliente = Usuario.query.get_or_404(cliente_id)
+    if cliente.is_master() or cliente.perfil_funcionario is not None:
+        flash('Não é permitido excluir este usuário.', 'danger')
+        return redirect(url_for('clientes_pesquisar', search=1))
+    db.session.delete(cliente)
+    db.session.commit()
+    flash('Cliente excluído com sucesso!', 'info')
+    return redirect(url_for('clientes_pesquisar', search=1))
+
+@app.route('/cadastro/funcionarios/pesquisar', methods=['GET'])
+@login_required
+@permission_required('pode_cadastrar_funcionario')
+def funcionarios_pesquisar():
+    """Pesquisa/lista funcionários no padrão de serviços."""
+    query = request.args.get('query', '').strip()
+    page = request.args.get('page', 1, type=int)
+    per_page = int(request.args.get('per_page', 10)) if str(request.args.get('per_page', '10')).isdigit() else 10
+    show_results = request.args.get('search') == '1'
+
+    base_query = Funcionario.query.join(Usuario).join(Cargo)
+    if query:
+        base_query = base_query.filter(
+            or_(
+                Usuario.nome.ilike(f'%{query}%'),
+                Usuario.email.ilike(f'%{query}%'),
+                Cargo.nome.ilike(f'%{query}%')
+            )
+        )
+
+    funcionarios = base_query.order_by(Usuario.nome).paginate(page=page, per_page=per_page, error_out=False) if show_results else None
+    form = FuncionarioForm()
+    return render_template('funcionarios_pesquisa.html', funcionarios=funcionarios, form=form, query=query, per_page=per_page, show_results=show_results)
+
 
 @app.route('/cadastro/usuarios/editar/<int:usuario_id>', methods=['GET', 'POST'])
 @login_required
@@ -308,10 +431,9 @@ def cadastro_cliente():
 @permission_required('pode_cadastrar_funcionario')
 def funcionarios():
     """
-    Rota para listar e gerenciar funcionários.
+    Rota principal de funcionários. Redireciona para a tela de pesquisa.
     """
-    funcionarios = Funcionario.query.join(Usuario).join(Cargo).all()
-    return render_template('funcionarios.html', funcionarios=funcionarios)
+    return redirect(url_for('funcionarios_pesquisar'))
 
 @app.route('/funcionarios/criar', methods=['GET', 'POST'])
 @login_required
@@ -338,7 +460,7 @@ def criar_funcionario():
         flash('Funcionário criado com sucesso!', 'success')
         return redirect(url_for('funcionarios'))
     
-    return render_template('funcionarios.html', form=form, action='criar')
+    return redirect(url_for('funcionarios_pesquisar'))
 
 # --------------------------------------------------------------------------------------------------
 # ROTAS DE CARGOS CORRIGIDAS E COMPLETAS

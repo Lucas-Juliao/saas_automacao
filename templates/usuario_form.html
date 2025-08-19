@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="page-header d-flex justify-content-between align-items-center">
+    <div>
+        <h1 class="m-0"><i class="fas fa-pen-to-square me-2"></i>Editar Usuário</h1>
+        <p class="text-muted m-0">Atualize os dados e permissões do usuário</p>
+    </div>
+    <a href="{{ url_for('usuarios_pesquisar', search=1) }}" class="btn btn-secondary"><i class="fas fa-arrow-left me-1"></i>Voltar</a>
+ </div>
+
+<div class="card">
+    <div class="card-header">
+        <h6 class="card-title mb-0">Informações do Usuário</h6>
+    </div>
+    <div class="card-body">
+        <form method="POST">
+            {{ form.hidden_tag() }}
+            <div class="row g-3">
+                <div class="col-12 col-md-6">
+                    <label class="form-label">{{ form.nome.label }}</label>
+                    {{ form.nome(class='form-control') }}
+                </div>
+                <div class="col-12 col-md-6">
+                    <label class="form-label">{{ form.email.label }}</label>
+                    {{ form.email(class='form-control') }}
+                </div>
+                <div class="col-12 col-md-6">
+                    <label class="form-label">{{ form.telefone.label }}</label>
+                    {{ form.telefone(class='form-control') }}
+                </div>
+                <div class="col-12 col-md-3 d-flex align-items-end">
+                    <div class="form-check">
+                        {{ form.ativo(class='form-check-input', id='ativo_usuario') }}
+                        <label class="form-check-label" for="ativo_usuario">Ativo</label>
+                    </div>
+                </div>
+            </div>
+
+            <hr class="my-4">
+            <h6 class="mb-3">Permissões</h6>
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <div class="form-check">
+                        {{ form.pode_cadastrar_cliente(class='form-check-input', id='perm_cliente') }}
+                        <label class="form-check-label" for="perm_cliente">{{ form.pode_cadastrar_cliente.label.text }}</label>
+                    </div>
+                    <div class="form-check">
+                        {{ form.pode_cadastrar_funcionario(class='form-check-input', id='perm_funcionario') }}
+                        <label class="form-check-label" for="perm_funcionario">{{ form.pode_cadastrar_funcionario.label.text }}</label>
+                    </div>
+                    <div class="form-check">
+                        {{ form.pode_cadastrar_cargo(class='form-check-input', id='perm_cargo') }}
+                        <label class="form-check-label" for="perm_cargo">{{ form.pode_cadastrar_cargo.label.text }}</label>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-check">
+                        {{ form.pode_agendar(class='form-check-input', id='perm_agendar') }}
+                        <label class="form-check-label" for="perm_agendar">{{ form.pode_agendar.label.text }}</label>
+                    </div>
+                    <div class="form-check">
+                        {{ form.pode_ver_agendamentos(class='form-check-input', id='perm_ver_ag') }}
+                        <label class="form-check-label" for="perm_ver_ag">{{ form.pode_ver_agendamentos.label.text }}</label>
+                    </div>
+                    <div class="form-check">
+                        {{ form.pode_ver_relatorios(class='form-check-input', id='perm_rel') }}
+                        <label class="form-check-label" for="perm_rel">{{ form.pode_ver_relatorios.label.text }}</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="d-flex justify-content-between mt-3">
+                <div class="text-muted small">
+                    <i class="fas fa-circle-info me-1"></i>
+                    Atualize os campos necessários e salve.
+                </div>
+                <button class="btn btn-primary"><i class="fas fa-save me-1"></i>Salvar</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
