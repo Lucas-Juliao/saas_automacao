@@ -689,7 +689,7 @@ def servicos_inserir():
         servico_existente = Servico.query.filter_by(nome=form.nome.data).first()
         if servico_existente:
             flash('Já existe um serviço com este nome.', 'danger')
-            return redirect(url_for('servicos_pesquisar')) 
+            return render_template('servico_inserir.html', form=form)
 
         novo_servico = Servico(
             nome=form.nome.data,
@@ -703,8 +703,7 @@ def servicos_inserir():
         flash('Serviço adicionado com sucesso!', 'success')
         return redirect(url_for('servicos_pesquisar'))
     
-    flash('Erro ao validar o formulário de serviço.', 'danger')
-    return redirect(url_for('servicos_pesquisar'))
+    return render_template('servico_inserir.html', form=form)
 
 @app.route('/cadastro/servicos/excluir/<int:servico_id>', methods=['POST'])
 @login_required
