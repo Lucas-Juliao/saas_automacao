@@ -36,8 +36,8 @@
                 
                 {% if current_user.is_master() or current_user.pode_cadastrar_cliente or current_user.pode_cadastrar_funcionario or current_user.pode_cadastrar_cargo %}
                 <li class="nav-item dropdown">
-                    <!-- A ROTA FOI ATUALIZADA AQUI PARA LEVAR À PÁGINA DE CADASTRO DE USUÁRIO -->
-                    <a class="nav-link dropdown-toggle" href="{{ url_for('cadastro_usuario') }}" data-bs-toggle="collapse" data-bs-target="#cadastroMenu">
+                    <!-- Link principal abre o menu; opção de usuário está no submenu -->
+                    <a class="nav-link dropdown-toggle" href="#cadastroMenu" data-bs-toggle="collapse" data-bs-target="#cadastroMenu">
                         <i class="fas fa-user-plus"></i>
                         <span class="nav-text">Cadastro</span>
                     </a>

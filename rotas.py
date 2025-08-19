@@ -171,23 +171,32 @@ def cadastro():
     """
     return render_template('cadastro.html')
 
-@app.route('/cadastro/usuario', methods=['GET', 'POST'])
+@app.route('/cadastro/usuario', methods=['GET'])
 @login_required
 @master_required
 def cadastro_usuario():
     """
-    Rota para cadastro de novos usuários.
+    Rota legada de cadastro de usuário. Redireciona para a tela de pesquisa/gerenciamento.
+    """
+    return redirect(url_for('usuarios_pesquisar', search=1))
+
+@app.route('/cadastro/usuario/inserir', methods=['GET', 'POST'])
+@login_required
+@master_required
+def usuario_inserir():
+    """
+    Rota para inserir um novo usuário com UI dedicada.
     """
     form = CadastroUsuarioForm()
     if form.validate_on_submit():
         if Usuario.query.filter_by(username=form.username.data).first():
             flash('Nome de usuário já existe.', 'danger')
-            return render_template('cadastro.html', form=form, tipo='usuario')
-        
+            return render_template('usuario_inserir.html', form=form)
+
         if Usuario.query.filter_by(email=form.email.data).first():
             flash('Email já cadastrado.', 'danger')
-            return render_template('cadastro.html', form=form, tipo='usuario')
-        
+            return render_template('usuario_inserir.html', form=form)
+
         usuario = Usuario(
             username=form.username.data,
             email=form.email.data,
@@ -202,14 +211,14 @@ def cadastro_usuario():
             pode_ver_relatorios=form.pode_ver_relatorios.data
         )
         usuario.set_password(form.password.data)
-        
+
         db.session.add(usuario)
         db.session.commit()
-        
+
         flash('Usuário cadastrado com sucesso!', 'success')
-        return redirect(url_for('cadastro'))
-    
-    return render_template('cadastro.html', form=form, tipo='usuario')
+        return redirect(url_for('usuarios_pesquisar', search=1))
+
+    return render_template('usuario_inserir.html', form=form)
 
 # Pesquisa/Listagem de usuários no padrão de serviços
 @app.route('/cadastro/usuarios/pesquisar', methods=['GET'])
