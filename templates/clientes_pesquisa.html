@@ -1,0 +1,119 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="page-header">
+    <div class="d-flex align-items-center justify-content-between">
+        <div>
+            <h1 class="m-0"><i class="fas fa-user me-2"></i>Clientes</h1>
+            <p class="text-muted m-0">Pesquisar e gerenciar clientes</p>
+        </div>
+        <a href="{{ url_for('clientes_inserir') }}" class="btn btn-primary">
+            <i class="fas fa-plus me-1"></i>Novo cliente
+        </a>
+    </div>
+ </div>
+
+<form class="card card-body mb-3" method="get" action="{{ url_for('clientes_pesquisar') }}">
+    <input type="hidden" name="search" value="1">
+    <div class="row g-3 align-items-end">
+        <div class="col-12 col-md-6">
+            <label class="form-label">Buscar por nome, usuário ou email</label>
+            <input type="text" name="query" value="{{ query or '' }}" class="form-control" placeholder="Ex.: JOAO ou EMAIL@SITE.COM">
+        </div>
+        <div class="col-6 col-md-2">
+            <label class="form-label">Por página</label>
+            <select class="form-select" name="per_page">
+                {% for n in [5,10,20,50] %}
+                    <option value="{{ n }}" {% if per_page==n %}selected{% endif %}>{{ n }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-12 col-md-2">
+            <button type="submit" class="btn btn-success w-100">Aplicar</button>
+        </div>
+    </div>
+</form>
+
+<div class="card">
+    <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0 resizable">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>Usuário</th>
+                    <th>Nome</th>
+                    <th>Email</th>
+                    <th class="text-center">Ativo</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if show_results and clientes and clientes.items %}
+                    {% for c in clientes.items %}
+                    <tr>
+                        <td>
+                            <div class="dropdown">
+                                <button class="btn btn-sm btn-light dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                                    <i class="fas fa-cog"></i>
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" href="{{ url_for('clientes_editar', cliente_id=c.id) }}"><i class="fas fa-pen-to-square me-2"></i>Editar</a></li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li>
+                                        <form method="post" action="{{ url_for('clientes_excluir', cliente_id=c.id) }}" onsubmit="return confirm('Excluir o cliente {{ c.nome }}?');">
+                                            <button class="dropdown-item text-danger" type="submit"><i class="fas fa-trash me-2"></i>Excluir</button>
+                                        </form>
+                                    </li>
+                                </ul>
+                            </div>
+                        </td>
+                        <td>{{ c.username }}</td>
+                        <td>{{ c.nome }}</td>
+                        <td>{{ c.email }}</td>
+                        <td class="text-center">
+                            <span class="badge bg-{{ 'success' if c.ativo else 'secondary' }}">{{ 'Ativo' if c.ativo else 'Inativo' }}</span>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                {% else %}
+                    <tr>
+                        <td colspan="5" class="text-center py-5">
+                            <i class="fas fa-filter fa-2x text-muted mb-2"></i>
+                            <div class="text-muted">Use os filtros acima e clique em "Aplicar" para visualizar os clientes.</div>
+                        </td>
+                    </tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="card-body">
+        <div class="d-flex justify-content-between align-items-center">
+            <div class="text-muted">Total: {{ clientes.total if clientes else 0 }} itens</div>
+            <nav>
+                <ul class="pagination m-0">
+                    <li class="page-item {% if not (clientes and clientes.has_prev) %}disabled{% endif %}">
+                        <form method="get" class="m-0">
+                            <input type="hidden" name="query" value="{{ query or '' }}">
+                            <input type="hidden" name="per_page" value="{{ per_page }}">
+                            <input type="hidden" name="search" value="1">
+                            <input type="hidden" name="page" value="{{ clientes.prev_num if (clientes and clientes.has_prev) else 1 }}">
+                            <button class="page-link" {% if not (clientes and clientes.has_prev) %}tabindex="-1" aria-disabled="true"{% endif %}>&laquo;</button>
+                        </form>
+                    </li>
+                    <li class="page-item disabled"><span class="page-link">Página {{ clientes.page if clientes else 1 }} de {{ clientes.pages if clientes else 1 }}</span></li>
+                    <li class="page-item {% if not (clientes and clientes.has_next) %}disabled{% endif %}">
+                        <form method="get" class="m-0">
+                            <input type="hidden" name="query" value="{{ query or '' }}">
+                            <input type="hidden" name="per_page" value="{{ per_page }}">
+                            <input type="hidden" name="search" value="1">
+                            <input type="hidden" name="page" value="{{ clientes.next_num if (clientes and clientes.has_next) else (clientes.page if clientes else 1) }}">
+                            <button class="page-link" {% if not (clientes and clientes.has_next) %}tabindex="-1" aria-disabled="true"{% endif %}>&raquo;</button>
+                        </form>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
