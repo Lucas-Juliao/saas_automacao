@@ -1,0 +1,121 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="page-header">
+    <div class="d-flex justify-content-between align-items-center">
+        <div>
+            <h1><i class="fas fa-users me-2"></i>Funcionários</h1>
+            <p class="text-muted">Gerenciar funcionários do sistema</p>
+        </div>
+        <a href="#" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createEmployeeModal">
+            <i class="fas fa-plus me-1"></i>Novo Funcionário
+        </a>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+                {% if funcionarios %}
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Nome</th>
+                                    <th>Email</th>
+                                    <th>Cargo</th>
+                                    <th>Data Contratação</th>
+                                    <th>Status</th>
+                                    <th>Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for funcionario in funcionarios %}
+                                <tr>
+                                    <td>{{ funcionario.usuario.nome }}</td>
+                                    <td>{{ funcionario.usuario.email }}</td>
+                                    <td>{{ funcionario.cargo.nome }}</td>
+                                    <td>{{ funcionario.data_contratacao.strftime('%d/%m/%Y') }}</td>
+                                    <td>
+                                        <span class="badge bg-{{ 'success' if funcionario.ativo else 'danger' }}">
+                                            {{ 'Ativo' if funcionario.ativo else 'Inativo' }}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <button class="btn btn-sm btn-outline-primary">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button class="btn btn-sm btn-outline-danger">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <div class="text-center py-5">
+                        <i class="fas fa-users fa-3x text-muted mb-3"></i>
+                        <h5 class="text-muted">Nenhum funcionário cadastrado</h5>
+                        <p class="text-muted">Clique no botão "Novo Funcionário" para começar.</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Create Employee Modal -->
+<div class="modal fade" id="createEmployeeModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Novo Funcionário</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form method="POST" action="{{ url_for('criar_funcionario') }}">
+                <div class="modal-body">
+                    {% if form %}
+                        {{ form.hidden_tag() }}
+                        
+                        <div class="mb-3">
+                            {{ form.usuario_id.label(class="form-label") }}
+                            {{ form.usuario_id(class="form-select") }}
+                            {% if form.usuario_id.errors %}
+                                <div class="text-danger">
+                                    {% for error in form.usuario_id.errors %}
+                                        <small>{{ error }}</small>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="mb-3">
+                            {{ form.cargo_id.label(class="form-label") }}
+                            {{ form.cargo_id(class="form-select") }}
+                            {% if form.cargo_id.errors %}
+                                <div class="text-danger">
+                                    {% for error in form.cargo_id.errors %}
+                                        <small>{{ error }}</small>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                    {% else %}
+                        <p>Para criar um funcionário, é necessário ter usuários e cargos cadastrados.</p>
+                    {% endif %}
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    {% if form %}
+                        <button type="submit" class="btn btn-primary">Criar Funcionário</button>
+                    {% endif %}
+                </div>
+            </form>
+        </div>
+    </div>
+ </div>
+{% endblock %}
+

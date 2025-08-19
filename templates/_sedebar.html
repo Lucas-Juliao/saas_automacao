@@ -1,0 +1,23 @@
+<div class="d-flex flex-column h-100">
+  <div class="p-3 border-bottom">
+    <a class="navbar-brand d-flex align-items-center gap-2" href="{{ url_for('dashboard') }}">
+      <span class="fw-bold">{{ (config.nome_empresa if config else 'JT Sistemas') }}</span>
+    </a>
+  </div>
+  <nav class="flex-grow-1 p-3">
+    <ul class="nav nav-pills flex-column gap-1">
+      <li class="nav-item"><a class="nav-link {% if request.path == url_for('dashboard') %}active{% endif %}" href="{{ url_for('dashboard') }}">Dashboard</a></li>
+      <li class="nav-item"><a class="nav-link {% if request.path.startswith('/cadastro') %}active{% endif %}" href="{{ url_for('servicos_pesquisar') }}">Serviços</a></li>
+      <li class="nav-item"><a class="nav-link {% if request.path.startswith('/funcionarios') %}active{% endif %}" href="{{ url_for('funcionarios') }}">Funcionários</a></li>
+      <li class="nav-item"><a class="nav-link {% if request.path.startswith('/cargos') %}active{% endif %}" href="{{ url_for('cargos_pesquisar') }}">Cargos</a></li>
+      <li class="nav-item"><a class="nav-link {% if request.path == url_for('agendamentos') %}active{% endif %}" href="{{ url_for('agendamentos') }}">Agendamentos</a></li>
+      <li class="nav-item"><a class="nav-link {% if request.path == url_for('relatorios') %}active{% endif %}" href="{{ url_for('relatorios') }}">Relatórios</a></li>
+      <li class="nav-item"><a class="nav-link {% if request.path == url_for('configuracoes') %}active{% endif %}" href="{{ url_for('configuracoes') }}">Configurações</a></li>
+    </ul>
+  </nav>
+  <div class="p-3 border-top small text-muted">
+    <div>Usuário: {{ current_user.nome if current_user.is_authenticated else 'Anônimo' }}</div>
+    <a class="text-decoration-none" href="{{ url_for('logout') }}">Sair</a>
+  </div>
+</div>
+

@@ -1,0 +1,338 @@
+{% extends "base.html" %}
+
+{% block extra_css %}
+<style>
+    .login-wrapper {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        padding: 2.5rem 1rem;
+        background: radial-gradient(1200px 600px at -10% -10%, rgba(52, 152, 219, .06), transparent 50%),
+                    radial-gradient(1000px 500px at 110% 10%, rgba(46, 204, 113, .06), transparent 50%),
+                    linear-gradient(180deg, #f8fbff 0%, #f6f8fb 100%);
+    }
+    .login-wrapper::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background-image: radial-gradient(rgba(44,62,80,.08) 1px, transparent 1px);
+        background-size: 18px 18px;
+        pointer-events: none;
+        mask-image: linear-gradient(transparent, rgba(0,0,0,.1) 10%, rgba(0,0,0,.25) 50%, transparent 100%);
+    }
+    .login-card {
+        background: #fff;
+        border-radius: 1rem;
+        box-shadow: 0 1rem 2rem rgba(0,0,0,.08);
+        max-width: 440px;
+        width: 100%;
+        overflow: hidden;
+    }
+    .login-header {
+        background: linear-gradient(180deg, #2c3e50 0%, #34495e 100%);
+        color: #fff;
+        padding: 1.25rem 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: .75rem;
+    }
+    .login-header .icon {
+        font-size: 1.5rem;
+    }
+    .login-body { padding: 1.5rem; }
+    .brand-text { font-weight: 600; }
+    .btn-login { width: 100%; }
+    .form-floating > label { color: #6c757d; }
+    .form-floating .form-control:focus ~ label { color: #2c3e50; }
+    .text-muted a { color: #2c3e50; text-decoration: none; }
+    .text-muted a:hover { text-decoration: underline; }
+    .btn-login {
+        background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+        border: none;
+        color: #fff;
+    }
+    .btn-login:hover {
+        filter: brightness(1.05);
+    }
+    .password-wrapper { position: relative; }
+    .toggle-password {
+        position: absolute;
+        right: .75rem;
+        top: 50%;
+        transform: translateY(-50%);
+        border: none;
+        background: transparent;
+        color: #6c757d;
+        padding: .25rem;
+        cursor: pointer;
+    }
+    .toggle-password:hover { color: #2c3e50; }
+    .caps-warning { display:none; color: #dc3545; font-size: .875rem; margin-top: .25rem; }
+    .support-links { display:flex; justify-content: space-between; align-items:center; margin-top: .5rem; }
+    .small-muted { font-size: .85rem; color: #6c757d; }
+    .divider { height:1px; background:#e9ecef; margin:1rem 0; }
+    .avatar {
+        width: 64px;
+        height: 64px;
+        display: grid;
+        place-items: center;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+        color: #fff;
+        box-shadow: 0 8px 18px rgba(44,62,80,.25);
+        margin-top: -2rem;
+    }
+    .feature-card {
+        border: 1px solid #eef2f7;
+        border-radius: 1rem;
+        background: rgba(255,255,255,.65);
+        backdrop-filter: saturate(160%) blur(6px);
+        box-shadow: 0 20px 40px rgba(31,45,61,.08);
+        height: 100%;
+    }
+    .feature-item { display:flex; gap:.75rem; }
+    .feature-item i { width: 22px; text-align: center; }
+    .kpis { display:grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap:.75rem; }
+    .kpi { background:#fff; border:1px solid #eef2f7; border-radius:.75rem; padding:.75rem; text-align:center; }
+    .kpi .value { font-weight:700; color:#2c3e50; font-size:1.05rem; }
+    .kpi .label { font-size:.75rem; color:#6c757d; }
+    .badge-soft { background: #f1f4f8; color:#2c3e50; border:1px solid #e6eaf0; padding:.35rem .5rem; border-radius:.5rem; font-size:.75rem; }
+    .logo-row { display:flex; gap:.5rem; align-items:center; flex-wrap:wrap; }
+    .logo-row .logo-item { border:1px solid #eef2f7; border-radius:.5rem; padding:.35rem .5rem; background:#fff; color:#6c757d; font-size:.85rem; }
+    blockquote.testimonial { border-left:4px solid #2c3e50; padding-left:1rem; margin:0; color:#495057; font-style:italic; }
+    .muted { color:#6c757d; }
+    @media (max-width: 991.98px) {
+        .avatar { margin: .5rem 0 0; }
+    }
+ </style>
+{% endblock %}
+
+{% block content %}
+<div class="login-wrapper">
+    <div class="container">
+        <div class="row align-items-center justify-content-center g-4">
+            <div class="col-12 col-lg-6">
+                <div class="login-card fade-in">
+                    <div class="login-header">
+                        <i class="fas fa-user-lock icon"></i>
+                        <div class="h5 m-0 brand-text">Bem vindo ao JT Sistemas</div>
+                    </div>
+                    <div class="login-body">
+                        <div class="d-flex justify-content-center">
+                            <div class="avatar"><i class="fas fa-user"></i></div>
+                        </div>
+                        <p class="text-center text-muted mt-3 mb-4">Acesse sua conta para gerenciar agendamentos, clientes e equipe.</p>
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ 'danger' if category == 'error' else category }} alert-dismissible fade show" role="alert">
+                            {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+            <form method="POST" novalidate id="login-form">
+                {{ form.hidden_tag() }}
+
+                <div class="form-floating mb-3">
+                    {{ form.username(class="form-control", placeholder="Usuário", id="floatingUsername", required=True) }}
+                    {{ form.username.label(class="form-label", for="floatingUsername") }}
+                    {% if form.username.errors %}
+                        <div class="invalid-feedback d-block">
+                            {% for error in form.username.errors %}{{ error }}{% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div class="form-floating mb-2 password-wrapper">
+                    {{ form.password(class="form-control", placeholder="Senha", id="floatingPassword", required=True, autocomplete="current-password") }}
+                    {{ form.password.label(class="form-label", for="floatingPassword") }}
+                    <button type="button" class="toggle-password" aria-label="Mostrar senha" title="Mostrar/ocultar senha">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                    {% if form.password.errors %}
+                        <div class="invalid-feedback d-block">
+                            {% for error in form.password.errors %}{{ error }}{% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+                <div id="caps-warning" class="caps-warning"><i class="fas fa-exclamation-triangle me-1"></i>Caps Lock está ativado</div>
+
+                <div class="support-links mb-3">
+                    <a href="#" class="small-muted">Esqueceu sua senha?</a>
+                    <a href="#" class="small-muted" data-bs-toggle="tooltip" title="Dicas de acesso e contato de suporte">Precisa de ajuda?</a>
+                </div>
+
+                <button type="submit" class="btn btn-lg btn-login">
+                    <i class="fas fa-sign-in-alt me-2"></i>Entrar
+                </button>
+
+                <div class="divider"></div>
+                <div class="text-center small text-muted">Acesso seguro • Seus dados são protegidos</div>
+            </form>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-lg-5">
+                <div class="feature-card p-4 fade-in">
+                    <div class="mb-2 d-flex align-items-center gap-2">
+                        <i class="fas fa-star text-warning"></i>
+                        <h5 class="m-0">Por que usar o JT Sistemas?</h5>
+                    </div>
+                    <div class="vstack gap-3">
+                        <!-- Destaques -->
+                        <div class="feature-item">
+                            <i class="fab fa-whatsapp text-success"></i>
+                            <div>
+                                <div class="fw-semibold">Bot WhatsApp integrado</div>
+                                <div class="text-muted small">Lembretes e confirmações automáticas de agendamentos.</div>
+                            </div>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-calendar-check text-primary"></i>
+                            <div>
+                                <div class="fw-semibold">Agendamento otimizado</div>
+                                <div class="text-muted small">Fluxos rápidos e validações inteligentes.</div>
+                            </div>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-chart-line text-info"></i>
+                            <div>
+                                <div class="fw-semibold">Relatórios e métricas</div>
+                                <div class="text-muted small">Acompanhe desempenho por período e status.</div>
+                            </div>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-shield-alt text-secondary"></i>
+                            <div>
+                                <div class="fw-semibold">Segurança e perfis</div>
+                                <div class="text-muted small">Controles de acesso alinhados às funções da equipe.</div>
+                            </div>
+                        </div>
+
+                        <!-- KPIs -->
+                        <div class="kpis">
+                            <div class="kpi">
+                                <div class="value">99,95%</div>
+                                <div class="label">Uptime</div>
+                            </div>
+                            <div class="kpi">
+                                <div class="value">-32%</div>
+                                <div class="label">No-shows</div>
+                            </div>
+                            <div class="kpi">
+                                <div class="value">+48%</div>
+                                <div class="label">Produtividade</div>
+                            </div>
+                        </div>
+
+                        <!-- Confiabilidade -->
+                        <div>
+                            <div class="mb-1 fw-semibold">Confiabilidade</div>
+                            <div class="logo-row">
+                                <span class="badge-soft"><i class="fas fa-clock me-1"></i>SLA 24h</span>
+                                <span class="badge-soft"><i class="fas fa-sync me-1"></i>Backup diário</span>
+                                <span class="badge-soft"><i class="fas fa-server me-1"></i>Infra escalável</span>
+                            </div>
+                        </div>
+
+                        <!-- Segurança e Compliance -->
+                        <div>
+                            <div class="mb-1 fw-semibold">Segurança & Compliance</div>
+                            <div class="logo-row">
+                                <span class="badge-soft"><i class="fas fa-lock me-1"></i>Criptografia</span>
+                                <span class="badge-soft"><i class="fas fa-user-shield me-1"></i>LGPD-ready</span>
+                                <span class="badge-soft"><i class="fas fa-key me-1"></i>Senhas seguras</span>
+                            </div>
+                        </div>
+
+                        <!-- Compatibilidade -->
+                        <div>
+                            <div class="mb-1 fw-semibold">Compatível com</div>
+                            <div class="logo-row">
+                                <span class="logo-item"><i class="fab fa-whatsapp me-1"></i>WhatsApp</span>
+                                <span class="logo-item"><i class="fab fa-windows me-1"></i>Windows</span>
+                                <span class="logo-item"><i class="fab fa-apple me-1"></i>macOS</span>
+                                <span class="logo-item"><i class="fab fa-android me-1"></i>Android</span>
+                                <span class="logo-item"><i class="fab fa-chrome me-1"></i>Chrome</span>
+                            </div>
+                        </div>
+
+                        <!-- Depoimento -->
+                        <div>
+                            <blockquote class="testimonial">
+                                “Com o JT Sistemas, reduzimos faltas e ganhamos previsibilidade no dia a dia. Interface simples e poderosa.”
+                            </blockquote>
+                            <div class="muted small mt-1">— Equipe Operacional</div>
+                        </div>
+
+                        <!-- Suporte -->
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class="muted small"><i class="fas fa-headset me-1"></i>Suporte: seg–sex, 9h–18h</div>
+                            <a href="#" class="small">Fale conosco</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const username = document.getElementById('floatingUsername');
+    const password = document.getElementById('floatingPassword');
+    const toggleBtn = document.querySelector('.toggle-password');
+    const capsWarning = document.getElementById('caps-warning');
+    const form = document.getElementById('login-form');
+
+    if (username && window.innerWidth >= 768) {
+        username.focus();
+    }
+
+    if (toggleBtn && password) {
+        toggleBtn.addEventListener('click', function () {
+            const isPassword = password.getAttribute('type') === 'password';
+            password.setAttribute('type', isPassword ? 'text' : 'password');
+            this.innerHTML = isPassword ? '<i class="fas fa-eye-slash"></i>' : '<i class="fas fa-eye"></i>';
+        });
+    }
+
+    if (password) {
+        const handleCaps = (e) => {
+            const capsOn = e.getModifierState && e.getModifierState('CapsLock');
+            capsWarning.style.display = capsOn ? 'block' : 'none';
+        };
+        password.addEventListener('keydown', handleCaps);
+        password.addEventListener('keyup', handleCaps);
+    }
+
+    if (form) {
+        form.addEventListener('submit', function (e) {
+            const submitBtn = form.querySelector('button[type="submit"]');
+            if (submitBtn) {
+                submitBtn.disabled = true;
+                const originalHtml = submitBtn.innerHTML;
+                submitBtn.dataset.original = originalHtml;
+                submitBtn.innerHTML = '<span class="spinner"></span> Entrando...';
+                setTimeout(() => {
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = originalHtml;
+                }, 6000);
+            }
+        });
+    }
+
+    // Enable Bootstrap tooltips
+    if (typeof bootstrap !== 'undefined' && bootstrap.Tooltip) {
+        document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach(el => new bootstrap.Tooltip(el));
+    }
+});
+</script>
+{% endblock %}

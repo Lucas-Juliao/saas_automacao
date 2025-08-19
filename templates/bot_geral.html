@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="page-header">
+    <h1><i class="fas fa-sliders-h me-2"></i>Configurações Gerais do Bot</h1>
+    <p class="text-muted">Defina horários de atendimento, dias úteis e fuso horário</p>
+ </div>
+
+<div class="row">
+    <div class="col-md-8">
+        <form method="POST" class="card">
+            <div class="card-header">
+                <h6 class="card-title mb-0">Horários de Atendimento</h6>
+            </div>
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-6">
+                        <label class="form-label">Início</label>
+                        <input type="time" class="form-control" name="horario_inicio" value="08:00">
+                    </div>
+                    <div class="col-6">
+                        <label class="form-label">Fim</label>
+                        <input type="time" class="form-control" name="horario_fim" value="18:00">
+                    </div>
+                </div>
+
+                <div class="mt-3">
+                    <label class="form-label">Dias de Atendimento</label>
+                    <div class="row g-2">
+                        {% set dias = ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom'] %}
+                        {% for i, d in enumerate(dias) %}
+                        <div class="col-4">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="dias_semana" id="dia{{ i }}" value="{{ d }}" {% if d in ['Seg','Ter','Qua','Qui','Sex'] %}checked{% endif %}>
+                                <label class="form-check-label" for="dia{{ i }}">{{ d }}</label>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <div class="mt-3">
+                    <label class="form-label">Fuso Horário</label>
+                    <select class="form-select" name="timezone">
+                        <option value="America/Sao_Paulo" selected>America/Sao_Paulo (GMT-03)</option>
+                        <option value="UTC">UTC</option>
+                        <option value="America/Manaus">America/Manaus</option>
+                    </select>
+                </div>
+                <div class="mt-3">
+                    <label class="form-label">Mensagem fora do horário</label>
+                    <textarea class="form-control" name="msg_fora_horario" rows="3" placeholder="Estamos fora do horário de atendimento. Entraremos em contato no próximo dia útil."></textarea>
+                </div>
+                <div class="mt-3">
+                    <label class="form-label">Mensagem fora do horário</label>
+                    <textarea class="form-control" name="msg_fora_horario" rows="3" placeholder="Estamos fora do horário de atendimento. Entraremos em contato no próximo dia útil."></textarea>
+                </div>
+            </div>
+            <div class="card-footer d-flex justify-content-end">
+                <button class="btn btn-primary"><i class="fas fa-save me-1"></i>Salvar</button>
+            </div>
+        </form>
+    </div>
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">
+                <h6 class="card-title mb-0">Observações</h6>
+            </div>
+            <div class="card-body">
+                <ul class="text-muted small m-0 ps-3">
+                    <li>O bot respeitará o horário e os dias definidos.</li>
+                    <li>Mensagens fora do horário podem receber resposta automática.</li>
+                    <li>O fuso horário é aplicado a todos os cálculos do bot.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

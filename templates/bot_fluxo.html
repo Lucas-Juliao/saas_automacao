@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="page-header">
+    <h1><i class="fas fa-project-diagram me-2"></i>Fluxo do Bot</h1>
+    <p class="text-muted">Defina o fluxograma de atendimento do bot</p>
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h6 class="card-title mb-0">Editor de Fluxo</h6>
+                <div class="d-flex gap-2">
+                    <button class="btn btn-sm btn-outline-secondary" type="button" id="btnAddNode"><i class="fas fa-plus me-1"></i>Nó</button>
+                    <button class="btn btn-sm btn-outline-secondary" type="button" id="btnAddEdge"><i class="fas fa-random me-1"></i>Conexão</button>
+                </div>
+            </div>
+            <div class="card-body" style="min-height: 420px;">
+                <div id="flowCanvas" class="border rounded" style="height:380px; background:#fafbfc;"></div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <form method="POST" class="card">
+            <div class="card-header">
+                <h6 class="card-title mb-0">Propriedades</h6>
+            </div>
+            <div class="card-body">
+                <div class="mb-3">
+                    <label class="form-label">JSON do Fluxo</label>
+                    <textarea class="form-control" id="flowJson" name="flow_json" rows="12" placeholder='{"nodes":[],"edges":[]}'></textarea>
+                </div>
+            </div>
+            <div class="card-footer d-flex justify-content-end gap-2">
+                <button class="btn btn-outline-secondary" type="button" id="btnLoad">Carregar</button>
+                <button class="btn btn-primary" type="submit"><i class="fas fa-save me-1"></i>Salvar</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Mock simples de um canvas/fluxo (somente placeholders visuais)
+document.addEventListener('DOMContentLoaded', function(){
+    const flowCanvas = document.getElementById('flowCanvas');
+    const flowJson = document.getElementById('flowJson');
+    const btnAddNode = document.getElementById('btnAddNode');
+    const btnAddEdge = document.getElementById('btnAddEdge');
+    const btnLoad = document.getElementById('btnLoad');
+
+    let model = { nodes: [], edges: [] };
+
+    function render(){
+        flowCanvas.innerHTML = '';
+        model.nodes.forEach((n, idx) => {
+            const el = document.createElement('div');
+            el.className = 'p-2 border rounded bg-white shadow-sm position-absolute';
+            el.style.left = (20 + idx*90) + 'px';
+            el.style.top = (20 + (idx%3)*90) + 'px';
+            el.innerText = n.label || ('Nó ' + (idx+1));
+            flowCanvas.appendChild(el);
+        });
+        // edges omitidos no mock visual
+        flowJson.value = JSON.stringify(model, null, 2);
+    }
+
+    btnAddNode.addEventListener('click', () => {
+        model.nodes.push({ id: 'n' + (model.nodes.length+1), label: 'Mensagem' });
+        render();
+    });
+    btnAddEdge.addEventListener('click', () => {
+        if(model.nodes.length >= 2){
+            model.edges.push({ from: model.nodes[0].id, to: model.nodes[model.nodes.length-1].id, condition: 'default' });
+            render();
+        }
+    });
+    btnLoad.addEventListener('click', () => {
+        try {
+            const parsed = JSON.parse(flowJson.value || '{}');
+            if(parsed.nodes && parsed.edges){ model = parsed; render(); }
+        } catch(e) { alert('JSON inválido'); }
+    });
+
+    render();
+});
+</script>
+{% endblock %}
+

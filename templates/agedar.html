@@ -1,0 +1,139 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="page-header">
+    <h1><i class="fas fa-calendar-plus me-2"></i>Novo Agendamento</h1>
+    <p class="text-muted">Criar um novo agendamento</p>
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-body">
+                <form method="POST">
+                    {{ form.hidden_tag() }}
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            {{ form.cliente_id.label(class="form-label") }}
+                            {{ form.cliente_id(class="form-select") }}
+                            {% if form.cliente_id.errors %}
+                                <div class="text-danger">
+                                    {% for error in form.cliente_id.errors %}
+                                        <small>{{ error }}</small>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="col-md-6 mb-3">
+                            {{ form.funcionario_id.label(class="form-label") }}
+                            {{ form.funcionario_id(class="form-select") }}
+                            {% if form.funcionario_id.errors %}
+                                <div class="text-danger">
+                                    {% for error in form.funcionario_id.errors %}
+                                        <small>{{ error }}</small>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            {{ form.data_agendamento.label(class="form-label") }}
+                            {{ form.data_agendamento(class="form-control") }}
+                            {% if form.data_agendamento.errors %}
+                                <div class="text-danger">
+                                    {% for error in form.data_agendamento.errors %}
+                                        <small>{{ error }}</small>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="col-md-6 mb-3">
+                            {{ form.duracao_minutos.label(class="form-label") }}
+                            {{ form.duracao_minutos(class="form-control") }}
+                            {% if form.duracao_minutos.errors %}
+                                <div class="text-danger">
+                                    {% for error in form.duracao_minutos.errors %}
+                                        <small>{{ error }}</small>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        {{ form.servico.label(class="form-label") }}
+                        {{ form.servico(class="form-control") }}
+                        {% if form.servico.errors %}
+                            <div class="text-danger">
+                                {% for error in form.servico.errors %}
+                                    <small>{{ error }}</small>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="mb-3">
+                        {{ form.observacoes.label(class="form-label") }}
+                        {{ form.observacoes(class="form-control", rows="3") }}
+                        {% if form.observacoes.errors %}
+                            <div class="text-danger">
+                                {% for error in form.observacoes.errors %}
+                                    <small>{{ error }}</small>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="d-flex justify-content-between">
+                        <a href="{{ url_for('agendamentos') }}" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left me-1"></i>Voltar
+                        </a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save me-1"></i>Agendar
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">
+                <h6 class="card-title mb-0">Informações</h6>
+            </div>
+            <div class="card-body">
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle me-2"></i>
+                    <strong>Dicas:</strong>
+                    <ul class="mb-0 mt-2">
+                        <li>Verifique a disponibilidade do funcionário</li>
+                        <li>Confirme os dados do cliente</li>
+                        <li>Adicione observações se necessário</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Set minimum date to today
+    document.addEventListener('DOMContentLoaded', function() {
+        const dateInput = document.getElementById('data_agendamento');
+        if (dateInput) {
+            const now = new Date();
+            now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+            dateInput.min = now.toISOString().slice(0, 16);
+        }
+    });
+ </script>
+{% endblock %}
+

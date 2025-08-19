@@ -1,0 +1,147 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="page-header">
+    <h1><i class="fab fa-whatsapp me-2"></i>Configuração Bot WhatsApp</h1>
+    <p class="text-muted">Configurar integração com Meta API WhatsApp</p>
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h6 class="card-title mb-0">Configurações da API</h6>
+            </div>
+            <div class="card-body">
+                <form method="POST">
+                    {{ form.hidden_tag() }}
+                    
+                    <div class="mb-3">
+                        {{ form.whatsapp_token.label(class="form-label") }}
+                        {{ form.whatsapp_token(class="form-control") }}
+                        <div class="form-text">Token de acesso obtido no Meta for Developers</div>
+                        {% if form.whatsapp_token.errors %}
+                            <div class="text-danger">
+                                {% for error in form.whatsapp_token.errors %}
+                                    <small>{{ error }}</small>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="mb-3">
+                        {{ form.whatsapp_phone_id.label(class="form-label") }}
+                        {{ form.whatsapp_phone_id(class="form-control") }}
+                        <div class="form-text">ID do número de telefone do WhatsApp Business</div>
+                        {% if form.whatsapp_phone_id.errors %}
+                            <div class="text-danger">
+                                {% for error in form.whatsapp_phone_id.errors %}
+                                    <small>{{ error }}</small>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="mb-3">
+                        {{ form.whatsapp_webhook_verify_token.label(class="form-label") }}
+                        {{ form.whatsapp_webhook_verify_token(class="form-control") }}
+                        <div class="form-text">Token para verificação do webhook</div>
+                        {% if form.whatsapp_webhook_verify_token.errors %}
+                            <div class="text-danger">
+                                {% for error in form.whatsapp_webhook_verify_token.errors %}
+                                    <small>{{ error }}</small>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="d-flex justify-content-between">
+                        <button type="button" class="btn btn-outline-info" onclick="testConnection()">
+                            <i class="fas fa-plug me-1"></i>Testar Conexão
+                        </button>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save me-1"></i>Salvar Configurações
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">
+                <h6 class="card-title mb-0">Status da Configuração</h6>
+            </div>
+            <div class="card-body">
+                <div class="mb-3">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span>Token de Acesso:</span>
+                        <span class="badge bg-{{ 'success' if config.whatsapp_token else 'danger' }}">
+                            {{ 'Configurado' if config.whatsapp_token else 'Não Configurado' }}
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="mb-3">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span>ID do Telefone:</span>
+                        <span class="badge bg-{{ 'success' if config.whatsapp_phone_id else 'danger' }}">
+                            {{ 'Configurado' if config.whatsapp_phone_id else 'Não Configurado' }}
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="mb-3">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span>Token Webhook:</span>
+                        <span class="badge bg-{{ 'success' if config.whatsapp_webhook_verify_token else 'danger' }}">
+                            {{ 'Configurado' if config.whatsapp_webhook_verify_token else 'Não Configurado' }}
+                        </span>
+                    </div>
+                </div>
+                
+                <hr>
+                
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle me-2"></i>
+                    <strong>Última atualização:</strong><br>
+                    {{ config.atualizado_em.strftime('%d/%m/%Y %H:%M') if config.atualizado_em else 'Nunca' }}
+                </div>
+            </div>
+        </div>
+        
+        <div class="card mt-3">
+            <div class="card-header">
+                <h6 class="card-title mb-0">Documentação</h6>
+            </div>
+            <div class="card-body">
+                <div class="list-group list-group-flush">
+                    <a href="https://developers.facebook.com/docs/whatsapp" target="_blank" class="list-group-item list-group-item-action">
+                        <i class="fas fa-external-link-alt me-2"></i>
+                        Meta for Developers
+                    </a>
+                    <a href="https://developers.facebook.com/docs/whatsapp/business-management-api" target="_blank" class="list-group-item list-group-item-action">
+                        <i class="fas fa-external-link-alt me-2"></i>
+                        WhatsApp Business API
+                    </a>
+                    <a href="https://developers.facebook.com/docs/whatsapp/webhooks" target="_blank" class="list-group-item list-group-item-action">
+                        <i class="fas fa-external-link-alt me-2"></i>
+                        Configurar Webhooks
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    function testConnection() {
+        // Implementar teste de conexão com a API do WhatsApp
+        alert('Funcionalidade de teste de conexão será implementada.');
+    }
+ </script>
+{% endblock %}
+
