@@ -115,38 +115,67 @@
                         </div>
                     </div>
 
-                    <div class="card mt-4 border-0 bg-light">
+                    <div class="card mt-4 border-0 bg-gradient-light">
                         <div class="card-body">
-                            <h6 class="card-title text-primary mb-3">
-                                <i class="fas fa-key me-2"></i>Permissões do usuário
-                            </h6>
+                            <div class="d-flex align-items-center mb-3">
+                                <div class="bg-primary bg-opacity-10 p-2 rounded me-3">
+                                    <i class="fas fa-key text-primary"></i>
+                                </div>
+                                <h6 class="card-title text-primary mb-0">
+                                    Permissões do usuário
+                                </h6>
+                            </div>
                             <div class="row g-3">
                                 <div class="col-md-6">
-                                    <div class="form-check form-switch">
-                                        {{ form.pode_cadastrar_cliente(class="form-check-input", role="switch", id="switchCliente") }}
-                                        <label class="form-check-label fw-medium" for="switchCliente">{{ form.pode_cadastrar_cliente.label.text }}</label>
+                                    <div class="permission-item">
+                                        <div class="form-check form-switch">
+                                            {{ form.pode_cadastrar_cliente(class="form-check-input", role="switch", id="switchCliente") }}
+                                            <label class="form-check-label fw-medium" for="switchCliente">
+                                                <i class="fas fa-user-plus me-2 text-success"></i>{{ form.pode_cadastrar_cliente.label.text }}
+                                            </label>
+                                        </div>
                                     </div>
-                                    <div class="form-check form-switch">
-                                        {{ form.pode_cadastrar_funcionario(class="form-check-input", role="switch", id="switchFuncionario") }}
-                                        <label class="form-check-label fw-medium" for="switchFuncionario">{{ form.pode_cadastrar_funcionario.label.text }}</label>
+                                    <div class="permission-item">
+                                        <div class="form-check form-switch">
+                                            {{ form.pode_cadastrar_funcionario(class="form-check-input", role="switch", id="switchFuncionario") }}
+                                            <label class="form-check-label fw-medium" for="switchFuncionario">
+                                                <i class="fas fa-users me-2 text-info"></i>{{ form.pode_cadastrar_funcionario.label.text }}
+                                            </label>
+                                        </div>
                                     </div>
-                                    <div class="form-check form-switch">
-                                        {{ form.pode_cadastrar_cargo(class="form-check-input", role="switch", id="switchCargo") }}
-                                        <label class="form-check-label fw-medium" for="switchCargo">{{ form.pode_cadastrar_cargo.label.text }}</label>
+                                    <div class="permission-item">
+                                        <div class="form-check form-switch">
+                                            {{ form.pode_cadastrar_cargo(class="form-check-input", role="switch", id="switchCargo") }}
+                                            <label class="form-check-label fw-medium" for="switchCargo">
+                                                <i class="fas fa-briefcase me-2 text-warning"></i>{{ form.pode_cadastrar_cargo.label.text }}
+                                            </label>
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
-                                    <div class="form-check form-switch">
-                                        {{ form.pode_agendar(class="form-check-input", role="switch", id="switchAgendar") }}
-                                        <label class="form-check-label fw-medium" for="switchAgendar">{{ form.pode_agendar.label.text }}</label>
+                                    <div class="permission-item">
+                                        <div class="form-check form-switch">
+                                            {{ form.pode_agendar(class="form-check-input", role="switch", id="switchAgendar") }}
+                                            <label class="form-check-label fw-medium" for="switchAgendar">
+                                                <i class="fas fa-calendar-plus me-2 text-primary"></i>{{ form.pode_agendar.label.text }}
+                                            </label>
+                                        </div>
                                     </div>
-                                    <div class="form-check form-switch">
-                                        {{ form.pode_ver_agendamentos(class="form-check-input", role="switch", id="switchVerAgendamentos") }}
-                                        <label class="form-check-label fw-medium" for="switchVerAgendamentos">{{ form.pode_ver_agendamentos.label.text }}</label>
+                                    <div class="permission-item">
+                                        <div class="form-check form-switch">
+                                            {{ form.pode_ver_agendamentos(class="form-check-input", role="switch", id="switchVerAgendamentos") }}
+                                            <label class="form-check-label fw-medium" for="switchVerAgendamentos">
+                                                <i class="fas fa-calendar-check me-2 text-success"></i>{{ form.pode_ver_agendamentos.label.text }}
+                                            </label>
+                                        </div>
                                     </div>
-                                    <div class="form-check form-switch">
-                                        {{ form.pode_ver_relatorios(class="form-check-input", role="switch", id="switchRelatorios") }}
-                                        <label class="form-check-label fw-medium" for="switchRelatorios">{{ form.pode_ver_relatorios.label.text }}</label>
+                                    <div class="permission-item">
+                                        <div class="form-check form-switch">
+                                            {{ form.pode_ver_relatorios(class="form-check-input", role="switch", id="switchRelatorios") }}
+                                            <label class="form-check-label fw-medium" for="switchRelatorios">
+                                                <i class="fas fa-chart-bar me-2 text-info"></i>{{ form.pode_ver_relatorios.label.text }}
+                                            </label>
+                                        </div>
                                     </div>
                                 </div>
                             </div>

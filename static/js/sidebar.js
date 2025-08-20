@@ -72,16 +72,8 @@ class SidebarManager {
                 const isToggle = link.getAttribute('data-bs-toggle') === 'collapse';
                 if (isToggle) return;
 
-                // Close for mobile
-                if (this.isMobile) {
-                    this.isExpanded = false;
-                    this.sidebar.classList.remove('show');
-                    this.toggleBodyOverflow(false);
-                } else {
-                    // Collapse on desktop
-                    this.sidebar.classList.remove('expanded');
-                    this.isExpanded = false;
-                }
+                // Force close sidebar completely
+                this.forceCloseSidebar();
             });
         });
 
@@ -89,14 +81,7 @@ class SidebarManager {
         const subLinks = this.sidebar.querySelectorAll('.collapse .nav-link');
         subLinks.forEach(sublink => {
             sublink.addEventListener('click', () => {
-                if (this.isMobile) {
-                    this.isExpanded = false;
-                    this.sidebar.classList.remove('show');
-                    this.toggleBodyOverflow(false);
-                } else {
-                    this.sidebar.classList.remove('expanded');
-                    this.isExpanded = false;
-                }
+                this.forceCloseSidebar();
             });
         });
     }
@@ -242,6 +227,25 @@ class SidebarManager {
 
     forceCollapse() {
         this.collapseSidebar();
+    }
+
+    forceCloseSidebar() {
+        // Force close sidebar completely regardless of mode
+        this.isExpanded = false;
+        this.sidebar.classList.remove('show', 'expanded');
+        this.toggleBodyOverflow(false);
+        
+        // Close all dropdowns
+        const openDropdowns = this.sidebar.querySelectorAll('.collapse.show');
+        openDropdowns.forEach(dropdown => {
+            dropdown.classList.remove('show');
+        });
+        
+        // Reset all toggle buttons
+        const toggleButtons = this.sidebar.querySelectorAll('[data-bs-toggle="collapse"]');
+        toggleButtons.forEach(button => {
+            button.setAttribute('aria-expanded', 'false');
+        });
     }
 
     isCurrentlyExpanded() {

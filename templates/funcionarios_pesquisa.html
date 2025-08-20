@@ -7,9 +7,9 @@
             <h1 class="m-0"><i class="fas fa-users me-2"></i>Funcionários</h1>
             <p class="text-muted m-0">Pesquisar e gerenciar funcionários</p>
         </div>
-        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#novoFuncionarioModal">
+        <a href="{{ url_for('criar_funcionario') }}" class="btn btn-primary">
             <i class="fas fa-plus me-1"></i>Novo funcionário
-        </button>
+        </a>
     </div>
  </div>
 
@@ -117,39 +117,6 @@
     </div>
 </div>
 
-<!-- Modal: Novo Funcionário -->
-<div class="modal fade" id="novoFuncionarioModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Novo funcionário</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
-            </div>
-            <form method="post" action="{{ url_for('criar_funcionario') }}">
-                <div class="modal-body">
-                    {% if form %}
-                    {{ form.hidden_tag() }}
-                    <div class="mb-3">
-                        <label class="form-label">{{ form.usuario_id.label }}</label>
-                        {{ form.usuario_id(class='form-select') }}
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">{{ form.cargo_id.label }}</label>
-                        {{ form.cargo_id(class='form-select') }}
-                    </div>
-                    {% else %}
-                        <div class="text-muted">Cadastre usuários e cargos antes de criar um funcionário.</div>
-                    {% endif %}
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    {% if form %}
-                    <button class="btn btn-primary" type="submit">Salvar</button>
-                    {% endif %}
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
+
 {% endblock %}
 

@@ -447,7 +447,7 @@ def criar_funcionario():
         funcionario_existente = Funcionario.query.filter_by(usuario_id=form.usuario_id.data).first()
         if funcionario_existente:
             flash('Usuário já é funcionário.', 'danger')
-            return render_template('funcionarios.html', form=form, action='criar')
+            return render_template('funcionario_inserir.html', form=form)
         
         funcionario = Funcionario(
             usuario_id=form.usuario_id.data,
@@ -458,9 +458,9 @@ def criar_funcionario():
         db.session.commit()
         
         flash('Funcionário criado com sucesso!', 'success')
-        return redirect(url_for('funcionarios'))
+        return redirect(url_for('funcionarios_pesquisar', search=1))
     
-    return redirect(url_for('funcionarios_pesquisar'))
+    return render_template('funcionario_inserir.html', form=form)
 
 # --------------------------------------------------------------------------------------------------
 # ROTAS DE CARGOS CORRIGIDAS E COMPLETAS

@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="page-header">
+    <div class="d-flex align-items-center justify-content-between">
+        <div>
+            <h1 class="m-0"><i class="fas fa-user-plus me-2"></i>Novo Funcionário</h1>
+            <p class="text-muted m-0">Associe um usuário a um cargo para criar um funcionário</p>
+        </div>
+        <a href="{{ url_for('funcionarios_pesquisar', search=1) }}" class="btn btn-outline-secondary">
+            <i class="fas fa-arrow-left me-1"></i>Voltar para lista
+        </a>
+    </div>
+</div>
+
+<div class="row justify-content-center">
+    <div class="col-12 col-lg-8 col-xl-6">
+        <div class="card shadow-lg border-0">
+            <div class="card-header bg-gradient-info text-white">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-users me-2"></i>Dados do funcionário
+                </h5>
+            </div>
+            <div class="card-body p-4">
+                <form method="POST" novalidate>
+                    {{ form.hidden_tag() }}
+                    <div class="row g-4">
+                        <div class="col-12">
+                            <div class="form-floating">
+                                {{ form.usuario_id(class="form-select", id="usuario_id") }}
+                                <label for="usuario_id">{{ form.usuario_id.label.text }}</label>
+                            </div>
+                            {% for e in form.usuario_id.errors %}<div class="text-danger small mt-1">{{ e }}</div>{% endfor %}
+                            <div class="form-text text-muted small">
+                                <i class="fas fa-info-circle me-1"></i>Selecione um usuário que ainda não seja funcionário.
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="form-floating">
+                                {{ form.cargo_id(class="form-select", id="cargo_id") }}
+                                <label for="cargo_id">{{ form.cargo_id.label.text }}</label>
+                            </div>
+                            {% for e in form.cargo_id.errors %}<div class="text-danger small mt-1">{{ e }}</div>{% endfor %}
+                            <div class="form-text text-muted small">
+                                <i class="fas fa-briefcase me-1"></i>Escolha o cargo que o funcionário irá exercer.
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="alert alert-info mt-4" role="alert">
+                        <div class="d-flex">
+                            <i class="fas fa-lightbulb me-2 mt-1"></i>
+                            <div>
+                                <strong>Dica:</strong> Para criar um funcionário, primeiro certifique-se de que:
+                                <ul class="mb-0 mt-2">
+                                    <li>O usuário já está cadastrado no sistema</li>
+                                    <li>O cargo desejado já foi criado</li>
+                                    <li>O usuário não é funcionário de outro cargo</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="d-flex justify-content-between mt-4 pt-3 border-top">
+                        <a href="{{ url_for('funcionarios_pesquisar', search=1) }}" class="btn btn-outline-secondary btn-lg">
+                            <i class="fas fa-times me-2"></i>Cancelar
+                        </a>
+                        <button type="submit" class="btn btn-info btn-lg px-4">
+                            <i class="fas fa-save me-2"></i>Criar funcionário
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
