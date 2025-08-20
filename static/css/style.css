@@ -366,6 +366,12 @@ body {
     margin-bottom: 0;
 }
 
+/* Títulos brancos em headers com gradiente/text-white */
+.card-header.text-white .card-title,
+.card-header[class*="bg-gradient-"] .card-title {
+    color: #ffffff !important;
+}
+
 /* Stats Cards */
 .stats-card {
     border-left: 4px solid var(--primary-color);
