@@ -220,6 +220,47 @@ def usuario_inserir():
 
     return render_template('usuario_inserir.html', form=form)
 
+@app.route('/cadastro/usuario/visualizar/<int:usuario_id>')
+@login_required
+@master_required
+def usuario_visualizar(usuario_id):
+    """
+    Rota para visualizar detalhes de um usuário.
+    """
+    usuario = Usuario.query.get_or_404(usuario_id)
+    return render_template('usuario_visualizar.html', usuario=usuario)
+
+@app.route('/cadastro/usuario/editar/<int:usuario_id>', methods=['GET', 'POST'])
+@login_required
+@master_required
+def usuario_editar(usuario_id):
+    """
+    Rota para editar um usuário existente.
+    """
+    usuario = Usuario.query.get_or_404(usuario_id)
+    form = UsuarioEditForm(obj=usuario)
+    
+    if form.validate_on_submit():
+        usuario.username = form.username.data
+        usuario.email = form.email.data
+        usuario.nome = form.nome.data
+        usuario.telefone = form.telefone.data
+        usuario.pode_cadastrar_cliente = form.pode_cadastrar_cliente.data
+        usuario.pode_cadastrar_funcionario = form.pode_cadastrar_funcionario.data
+        usuario.pode_cadastrar_cargo = form.pode_cadastrar_cargo.data
+        usuario.pode_agendar = form.pode_agendar.data
+        usuario.pode_ver_agendamentos = form.pode_ver_agendamentos.data
+        usuario.pode_ver_relatorios = form.pode_ver_relatorios.data
+        
+        if form.password.data:
+            usuario.set_password(form.password.data)
+        
+        db.session.commit()
+        flash('Usuário atualizado com sucesso!', 'success')
+        return redirect(url_for('usuarios_pesquisar', search=1))
+    
+    return render_template('usuario_editar.html', form=form, usuario=usuario)
+
 # Pesquisa/Listagem de usuários no padrão de serviços
 @app.route('/cadastro/usuarios/pesquisar', methods=['GET'])
 @login_required
@@ -299,6 +340,18 @@ def clientes_inserir():
         flash('Cliente cadastrado com sucesso!', 'success')
         return redirect(url_for('clientes_pesquisar', search=1))
     return render_template('cliente_inserir.html', form=form)
+
+@app.route('/cadastro/cliente/visualizar/<int:cliente_id>')
+@login_required
+@permission_required('pode_cadastrar_cliente')
+def cliente_visualizar(cliente_id):
+    """
+    Rota para visualizar detalhes de um cliente.
+    """
+    cliente = Usuario.query.get_or_404(cliente_id)
+    if cliente.tipo_usuario != 'restrito':
+        abort(404)
+    return render_template('cliente_visualizar.html', cliente=cliente)
 
 @app.route('/cadastro/clientes/editar/<int:cliente_id>', methods=['GET', 'POST'])
 @login_required
@@ -461,6 +514,36 @@ def criar_funcionario():
         return redirect(url_for('funcionarios_pesquisar', search=1))
     
     return render_template('funcionario_inserir.html', form=form)
+
+@app.route('/cadastro/funcionario/visualizar/<int:funcionario_id>')
+@login_required
+@permission_required('pode_cadastrar_funcionario')
+def funcionario_visualizar(funcionario_id):
+    """
+    Rota para visualizar detalhes de um funcionário.
+    """
+    funcionario = Funcionario.query.get_or_404(funcionario_id)
+    return render_template('funcionario_visualizar.html', funcionario=funcionario)
+
+@app.route('/cadastro/funcionario/editar/<int:funcionario_id>', methods=['GET', 'POST'])
+@login_required
+@permission_required('pode_cadastrar_funcionario')
+def funcionario_editar(funcionario_id):
+    """
+    Rota para editar um funcionário existente.
+    """
+    funcionario = Funcionario.query.get_or_404(funcionario_id)
+    form = FuncionarioForm(obj=funcionario)
+    
+    if form.validate_on_submit():
+        funcionario.usuario_id = form.usuario_id.data
+        funcionario.cargo_id = form.cargo_id.data
+        
+        db.session.commit()
+        flash('Funcionário atualizado com sucesso!', 'success')
+        return redirect(url_for('funcionarios_pesquisar', search=1))
+    
+    return render_template('funcionario_editar.html', form=form, funcionario=funcionario)
 
 # --------------------------------------------------------------------------------------------------
 # ROTAS DE CARGOS CORRIGIDAS E COMPLETAS

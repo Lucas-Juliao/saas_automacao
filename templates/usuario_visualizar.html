@@ -1,0 +1,192 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="page-header">
+    <div class="d-flex align-items-center justify-content-between">
+        <div>
+            <h1 class="m-0 text-dark"><i class="fas fa-user me-2 text-primary"></i>Detalhes do Usuário</h1>
+            <p class="text-muted m-0">Visualize as informações completas do usuário</p>
+        </div>
+        <div class="d-flex gap-2">
+            <a href="{{ url_for('usuarios_pesquisar', search=1) }}" class="btn btn-outline-secondary">
+                <i class="fas fa-arrow-left me-1"></i>Voltar para lista
+            </a>
+            <a href="{{ url_for('usuario_editar', usuario_id=usuario.id) }}" class="btn btn-primary">
+                <i class="fas fa-edit me-1"></i>Editar
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="row justify-content-center">
+    <div class="col-12 col-lg-8 col-xl-6">
+        <div class="card form-card">
+            <div class="card-header bg-gradient-primary text-white">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-user me-2"></i>Informações do usuário
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row g-4">
+                    <div class="col-md-6">
+                        <div class="info-group">
+                            <label class="form-label fw-bold text-muted">Nome de usuário</label>
+                            <p class="form-control-plaintext">{{ usuario.username }}</p>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="info-group">
+                            <label class="form-label fw-bold text-muted">Email</label>
+                            <p class="form-control-plaintext">{{ usuario.email }}</p>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="info-group">
+                            <label class="form-label fw-bold text-muted">Nome completo</label>
+                            <p class="form-control-plaintext">{{ usuario.nome }}</p>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="info-group">
+                            <label class="form-label fw-bold text-muted">Telefone</label>
+                            <p class="form-control-plaintext">{{ usuario.telefone or 'Não informado' }}</p>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="info-group">
+                            <label class="form-label fw-bold text-muted">Tipo de usuário</label>
+                            <p class="form-control-plaintext">
+                                {% if usuario.is_master() %}
+                                    <span class="badge bg-danger">Master</span>
+                                {% elif usuario.tipo_usuario == 'admin' %}
+                                    <span class="badge bg-warning">Administrador</span>
+                                {% else %}
+                                    <span class="badge bg-secondary">Restrito</span>
+                                {% endif %}
+                            </p>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="info-group">
+                            <label class="form-label fw-bold text-muted">Status</label>
+                            <p class="form-control-plaintext">
+                                {% if usuario.ativo %}
+                                    <span class="badge bg-success">Ativo</span>
+                                {% else %}
+                                    <span class="badge bg-danger">Inativo</span>
+                                {% endif %}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card mt-4 border-0 bg-gradient-light">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center mb-3">
+                            <div class="bg-primary bg-opacity-10 p-2 rounded me-3">
+                                <i class="fas fa-key text-primary"></i>
+                            </div>
+                            <h6 class="card-title text-primary mb-0">
+                                Permissões do usuário
+                            </h6>
+                        </div>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <div class="permission-item">
+                                    <div class="d-flex align-items-center">
+                                        <i class="fas fa-user-plus permission-icon user"></i>
+                                        <span class="fw-medium">Cadastrar Cliente</span>
+                                        <span class="ms-auto">
+                                            {% if usuario.pode_cadastrar_cliente %}
+                                                <i class="fas fa-check text-success"></i>
+                                            {% else %}
+                                                <i class="fas fa-times text-danger"></i>
+                                            {% endif %}
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="permission-item">
+                                    <div class="d-flex align-items-center">
+                                        <i class="fas fa-users permission-icon employee"></i>
+                                        <span class="fw-medium">Cadastrar Funcionário</span>
+                                        <span class="ms-auto">
+                                            {% if usuario.pode_cadastrar_funcionario %}
+                                                <i class="fas fa-check text-success"></i>
+                                            {% else %}
+                                                <i class="fas fa-times text-danger"></i>
+                                            {% endif %}
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="permission-item">
+                                    <div class="d-flex align-items-center">
+                                        <i class="fas fa-briefcase permission-icon role"></i>
+                                        <span class="fw-medium">Cadastrar Cargo</span>
+                                        <span class="ms-auto">
+                                            {% if usuario.pode_cadastrar_cargo %}
+                                                <i class="fas fa-check text-success"></i>
+                                            {% else %}
+                                                <i class="fas fa-times text-danger"></i>
+                                            {% endif %}
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="permission-item">
+                                    <div class="d-flex align-items-center">
+                                        <i class="fas fa-calendar-plus permission-icon schedule"></i>
+                                        <span class="fw-medium">Agendar</span>
+                                        <span class="ms-auto">
+                                            {% if usuario.pode_agendar %}
+                                                <i class="fas fa-check text-success"></i>
+                                            {% else %}
+                                                <i class="fas fa-times text-danger"></i>
+                                            {% endif %}
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="permission-item">
+                                    <div class="d-flex align-items-center">
+                                        <i class="fas fa-calendar-check permission-icon view"></i>
+                                        <span class="fw-medium">Ver Agendamentos</span>
+                                        <span class="ms-auto">
+                                            {% if usuario.pode_ver_agendamentos %}
+                                                <i class="fas fa-check text-success"></i>
+                                            {% else %}
+                                                <i class="fas fa-times text-danger"></i>
+                                            {% endif %}
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="permission-item">
+                                    <div class="d-flex align-items-center">
+                                        <i class="fas fa-chart-bar permission-icon report"></i>
+                                        <span class="fw-medium">Ver Relatórios</span>
+                                        <span class="ms-auto">
+                                            {% if usuario.pode_ver_relatorios %}
+                                                <i class="fas fa-check text-success"></i>
+                                            {% else %}
+                                                <i class="fas fa-times text-danger"></i>
+                                            {% endif %}
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-between mt-4 pt-3 border-top">
+                    <a href="{{ url_for('usuarios_pesquisar', search=1) }}" class="btn btn-outline-secondary btn-lg">
+                        <i class="fas fa-arrow-left me-2"></i>Voltar
+                    </a>
+                    <a href="{{ url_for('usuario_editar', usuario_id=usuario.id) }}" class="btn btn-primary btn-lg px-4">
+                        <i class="fas fa-edit me-2"></i>Editar usuário
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

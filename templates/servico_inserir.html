@@ -16,13 +16,13 @@
 
 <div class="row justify-content-center">
     <div class="col-12 col-lg-8 col-xl-6">
-        <div class="card shadow-lg border-0">
-            <div class="card-header bg-gradient-danger text-white">
+        <div class="card form-card">
+            <div class="card-header bg-gradient-warning text-white">
                 <h5 class="card-title mb-0">
                     <i class="fas fa-cut me-2"></i>Dados do serviço
                 </h5>
             </div>
-            <div class="card-body p-4">
+            <div class="card-body">
                 <form method="POST" novalidate>
                     {{ form.hidden_tag() }}
                     <div class="row g-4">
@@ -59,7 +59,7 @@
                         <a href="{{ url_for('servicos_pesquisar', search=1) }}" class="btn btn-outline-secondary btn-lg">
                             <i class="fas fa-times me-2"></i>Cancelar
                         </a>
-                        <button type="submit" class="btn btn-danger btn-lg px-4">
+                        <button type="submit" class="btn btn-warning btn-lg px-4">
                             <i class="fas fa-save me-2"></i>Salvar serviço
                         </button>
                     </div>
