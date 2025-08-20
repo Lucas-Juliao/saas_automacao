@@ -667,6 +667,58 @@ body {
     background: #a8a8a8;
 }
 
+/* Gradientes para headers de formulários */
+.bg-gradient-primary {
+    background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+}
+
+.bg-gradient-success {
+    background: linear-gradient(135deg, #28a745 0%, #1e7e34 100%);
+}
+
+.bg-gradient-danger {
+    background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+}
+
+.bg-gradient-warning {
+    background: linear-gradient(135deg, #ffc107 0%, #e0a800 100%);
+}
+
+.bg-gradient-info {
+    background: linear-gradient(135deg, #17a2b8 0%, #138496 100%);
+}
+
+/* Melhorias nos formulários */
+.form-floating > .form-control:focus,
+.form-floating > .form-select:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+.card.shadow-lg {
+    box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.175) !important;
+}
+
+/* Animações suaves */
+.btn, .form-control, .form-select {
+    transition: all 0.2s ease-in-out;
+}
+
+/* Melhorias no sidebar */
+.sidebar {
+    transition: transform 0.3s ease-in-out;
+}
+
+/* Fechar menu ao navegar */
+.sidebar-nav .nav-link:not(.dropdown-toggle) {
+    transition: all 0.2s ease;
+}
+
+.sidebar-nav .nav-link:not(.dropdown-toggle):hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    transform: translateX(5px);
+}
+
 /* Print Styles */
 @media print {
     .sidebar,
